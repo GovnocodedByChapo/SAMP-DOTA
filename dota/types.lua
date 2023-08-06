@@ -6,12 +6,28 @@
 ---@field y number
 ---@field z number
 
+---@class Animation
+---@field file string
+---@field name string
+
+---@enum HeroType
+local HeroType = {
+    MELEE = 1,
+    RANGE = 2
+}
+
 ---@class Hero
----@field abilities table<string, Ability>
----@field codename string
+---@field abilities Ability[]
 ---@field name string
 ---@field imageBase85 string?
----@field image unknown
+---@field image any
+---@field loop fun()?
+---@field model number
+---@field weapon number?
+---@field animations { walk: Animation, fight: Animation }?
+---@field stats PlayerStats
+---@field lastAttack number?
+---@field storage table?
 
 ---@class Ability
 ---@field name string
@@ -19,9 +35,17 @@
 ---@field image any
 ---@field type AbilityType
 ---@field waitForTarget boolean?
----@field onUse fun(...)?
+---@field onUse fun(...): boolean?
 ---@field onToggle fun(...)?
+---@field whileActive fun(...)?
 ---@field storage table?
+---@field cooldown number?
+---@field manaRequired number?
+---@field lastUsed number?
+---@field toggled boolean?
+---@field useThread boolean?
+---@field targetRange number?
+---@field onScriptUnload fun()?
 
 ---@enum TypeState
 local TypeState = {
@@ -40,6 +64,16 @@ local AbilityType = {
     INSTANT = 6,
     TOGGLEABLE = 7
 };
+
+---@class PlayerStats
+---@field maxHealth number
+---@field maxMana number
+---@field healthRegen number
+---@field manaRegen number
+---@field damage number
+---@field attackSpeed number
+---@field speed number
+---@field attackRange number
 
 ---@enum PlayerStat
 local PlayerStat = {
@@ -78,5 +112,6 @@ local ItemType = AbilityType;
 
 return {
     AbilityType = AbilityType,
-    ItemType = AbilityType
+    ItemType = AbilityType,
+    HeroType = HeroType
 };

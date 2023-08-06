@@ -10,22 +10,38 @@ local Map = {
     pos = Vector3D(0, 0, 250),
     requiredModels = { 0, 49 },
     requiredAnimations = {  },
+    lastCreepsSpawned = os.clock(),
+    currentMap = nil,
     pool = {
         object = {},
-        creep = {
-            [1] = {},
-            [2] = {}
-        }
+        creep = { {}, {} }
     },
-    lastCreepsSpawned = os.clock(),
-    currentMap = 'undefined'
+    creepModel = {
+        [1] = 0,
+        [2] = 49
+    };
 };
 
-local CONST_CREEP_TEAM_MODEL = {
-    [1] = 0,
-    [2] = 49
-};
-Map.creepModel = CONST_CREEP_TEAM_MODEL;
+---@param point Vector3D
+---@param radius number?
+---@return number[]
+function Map.dealDamageToPoint(point, radius)
+    return {};
+end
+
+---@param dist number?
+---@param addAngle number?
+---@return number x
+---@return number y
+---@return number z
+function Map.getPosFromCharVector(dist, addAngle)
+    local angle = math.rad(getCharHeading(PLAYER_PED)) + math.pi / 2
+    local posX, posY, posZ = getCharCoordinates(PLAYER_PED)
+    local x, y, z = dist * math.cos(angle) + posX, dist * math.sin(angle) + posY, posZ
+    return x, y, z
+end
+
+
 
 function Map.setCharModel(ped, model)
     assert(doesCharExist(ped), 'ped not found')
@@ -105,8 +121,8 @@ function Map.getCharTeam(handle)
 end
 
 function Map.Creep(team, pos, finishPos, specialModel, isTower)
-    local handle = createChar(6, specialModel or CONST_CREEP_TEAM_MODEL[team], pos.x, pos.y, pos.z);
-    Map.setCharModel(handle, specialModel or CONST_CREEP_TEAM_MODEL[team]);
+    local handle = createChar(6, specialModel or Map.creepModel[team], pos.x, pos.y, pos.z);
+    Map.setCharModel(handle, specialModel or Map.creepModel[team]);
     taskWanderStandard(handle);
     setCharHealth(handle, 100);
     local index = #Map.pool.creep[team] + 1;

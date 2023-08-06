@@ -27,9 +27,13 @@ end
 
 --- Load heroes list in <HEROES>.list
 function Heroes.init()
-    for _, heroFile in pairs(Utils.getFilesInPath(Heroes.basePath, '.lua')) do
-        local hero = require(Heroes.basePath .. '\\' .. heroFile:gsub('.lua', ''));
-        Heroes.list[hero.codename] = hero;
+    for _, fileName in pairs(Utils.getFilesInPath(Heroes.basePath, '*.lua')) do
+        if (fileName ~= 'init.lua') then
+            print(fileName);
+            local codeName = fileName:gsub('.lua', '');
+            Heroes.list[codeName] = require('dota.heroes.' .. codeName);
+            print('item loaded', codeName)
+        end
     end
 end
 
